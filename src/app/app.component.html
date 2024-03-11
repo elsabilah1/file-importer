@@ -1,0 +1,87 @@
+<div class="container">
+  <header>
+    <div>
+      <h1>File Importer <span>(xlsx)</span></h1>
+      <p *ngIf="status" [className]="getBadgeClass()">{{ status }}</p>
+    </div>
+    <a
+      class="btn-download"
+      download="template"
+      target="_blank"
+      href="/assets/template.xlsx"
+    >
+      Download Template
+    </a>
+  </header>
+
+  <main>
+    <ngx-dropzone
+      [multiple]="false"
+      [accept]="'.xlsx,.xls'"
+      class="dropzone"
+      (change)="onSelect($event)"
+    >
+      <ngx-dropzone-label class="dropzone-label"
+        >Drop it here</ngx-dropzone-label
+      >
+      <ngx-dropzone-preview
+        *ngIf="excelFile !== undefined"
+        class="dropzone-preview"
+        [removable]="true"
+        (removed)="onRemove()"
+      >
+        <ngx-dropzone-label class="dropzone-preview-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            width="36"
+            height="36"
+            viewBox="0 0 50 50"
+          >
+            <path
+              d="M 16 4 C 14.35 4 13 5.35 13 7 L 13 11 L 15 11 L 15 7 C 15 6.45 15.45 6 16 6 L 30 6 L 30 14 L 26.509766 14 C 26.799766 14.61 26.970234 15.28 26.990234 16 L 30 16 L 30 24 L 27 24 L 27 26 L 30 26 L 30 34 L 26.990234 34 C 26.970234 34.72 26.799766 35.39 26.509766 36 L 30 36 L 30 44 L 16 44 C 15.45 44 15 43.55 15 43 L 15 39 L 13 39 L 13 43 C 13 44.65 14.35 46 16 46 L 46 46 C 47.65 46 49 44.65 49 43 L 49 7 C 49 5.35 47.65 4 46 4 L 16 4 z M 32 6 L 46 6 C 46.55 6 47 6.45 47 7 L 47 14 L 32 14 L 32 6 z M 4.1992188 13 C 2.4437524 13 1 14.443752 1 16.199219 L 1 33.800781 C 1 35.556248 2.4437524 37 4.1992188 37 L 21.800781 37 C 23.556248 37 25 35.556248 25 33.800781 L 25 16.199219 C 25 14.443752 23.556248 13 21.800781 13 L 4.1992188 13 z M 4.1992188 15 L 21.800781 15 C 22.475315 15 23 15.524685 23 16.199219 L 23 33.800781 C 23 34.475315 22.475315 35 21.800781 35 L 4.1992188 35 C 3.5246851 35 3 34.475315 3 33.800781 L 3 16.199219 C 3 15.524685 3.5246851 15 4.1992188 15 z M 32 16 L 47 16 L 47 24 L 32 24 L 32 16 z M 7.96875 19 L 11.462891 24.978516 L 7.6308594 31 L 10.494141 31 L 13.015625 26.283203 L 15.548828 31 L 18.369141 31 L 14.599609 25 L 18.285156 19 L 15.609375 19 L 13.154297 23.505859 L 10.830078 19 L 7.96875 19 z M 32 26 L 47 26 L 47 34 L 32 34 L 32 26 z M 32 36 L 47 36 L 47 43 C 47 43.55 46.55 44 46 44 L 32 44 L 32 36 z"
+            ></path>
+          </svg>
+          {{ excelFile.name }}
+        </ngx-dropzone-label>
+      </ngx-dropzone-preview>
+    </ngx-dropzone>
+  </main>
+  <footer>
+    <button [disabled]="!excelFile" class="btn-reset" (click)="onRemove()">
+      Reset
+    </button>
+    <button [disabled]="!excelFile" class="btn-import" (click)="handleImport()">
+      Import
+    </button>
+  </footer>
+
+  <!-- loading -->
+  <div *ngIf="isProcessing" class="is-processing">is processing...</div>
+
+  <!-- show errors -->
+  <div *ngIf="errors.length > 0" class="error-container">
+    <table>
+      <thead>
+        <th>row</th>
+        <th>errors</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let error of errors" class="">
+          <td style="text-align: center">{{ error.row }}</td>
+          <td>
+            <p *ngFor="let item of error.errors">
+              - {{ item.path[0] }}: {{ item.message }}
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- show json data -->
+  <div *ngIf="previewJSON" class="preview-json">
+    <pre>{{ previewJSON }}</pre>
+  </div>
+</div>
